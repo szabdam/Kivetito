@@ -1,0 +1,6 @@
+CSOPORT=A
+
+Hajdúdorogi Szent Bazil|0
+Budakeszi Prohászka|0
+Sárospataki Református|0
+Miskolci Fráter|0

@@ -1,0 +1,5 @@
+CSOPORT=D
+
+Kisvárdai Várday|0
+Sátoraljaújhelyi Szent István|0
+Gyulai Római Katolikus|0

@@ -1,0 +1,5 @@
+CSOPORT=B
+
+Miskolci Lévay|0
+Kisvárdai Szent László|0
+Sátoraljaújhelyi Georgikon|0

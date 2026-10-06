@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Csapatpontszámok</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f2f4f7;
+            color: #222;
+        }
+
+        header {
+            background: #1f2937;
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 32px;
+        }
+
+        header p {
+            margin: 8px 0 0;
+            color: #d1d5db;
+        }
+
+        main {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* Csoport neve */
+
+        .group-display {
+            background: white;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .group-label {
+            font-size: 14px;
+            color: #777;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .group-name {
+            font-size: 42px;
+            font-weight: bold;
+            color: #2563eb;
+            margin-top: 5px;
+        }
+
+        /* Új csapat */
+
+        .add-team {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            margin-bottom: 25px;
+        }
+
+        .add-team h2 {
+            margin-top: 0;
+        }
+
+        .add-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .add-container input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        button {
+            border: none;
+            border-radius: 6px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            opacity: 0.85;
+        }
+
+        .add-button {
+            background: #2563eb;
+            color: white;
+        }
+
+        /* Ranglista */
+
+        .ranking {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .team {
+            display: flex;
+            align-items: center;
+            background: white;
+            padding: 18px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .team.first {
+            border: 3px solid #f59e0b;
+            background: #fffbeb;
+        }
+
+        .place {
+            width: 60px;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .team-name {
+            flex: 1;
+            font-size: 21px;
+            font-weight: bold;
+        }
+
+        .score {
+            width: 120px;
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .score-label {
+            display: block;
+            font-size: 12px;
+            color: #777;
+            font-weight: normal;
+        }
+
+        .controls {
+            display: flex;
+            gap: 5px;
+        }
+
+        .plus {
+            background: #16a34a;
+            color: white;
+            font-size: 18px;
+        }
+
+        .minus {
+            background: #dc2626;
+            color: white;
+            font-size: 18px;
+        }
+
+        .delete {
+            background: #6b7280;
+            color: white;
+        }
+
+        /* Alsó gombok */
+
+        .bottom-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 25px;
+        }
+
+        .file-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .import-button,
+        .export-button {
+            background: #374151;
+            color: white;
+            font-size: 15px;
+            padding: 14px 18px;
+        }
+
+        .refresh-button {
+            background: #2563eb;
+            color: white;
+            font-size: 16px;
+            padding: 14px 22px;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 40px;
+            color: #777;
+            background: white;
+            border-radius: 12px;
+        }
+
+        /* Mobil */
+
+        @media (max-width: 600px) {
+
+            .team {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .team-name {
+                min-width: 150px;
+            }
+
+            .score {
+                width: auto;
+            }
+
+            .controls {
+                width: 100%;
+                justify-content: flex-end;
+            }
+
+            .add-container {
+                flex-direction: column;
+            }
+
+            .bottom-controls {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+
+            .file-controls {
+                justify-content: center;
+            }
+
+            .refresh-button {
+                width: 100%;
+            }
+
+            .group-name {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <!-- Aktuális csoport -->
+
+        <section class="group-display">
+
+            <div class="group-label">
+                Aktuális csoport
+            </div>
+
+            <div
+                id="groupName"
+                class="group-name"
+            >
+                A
+            </div>
+
+        </section>
+
+
+        <!-- Új csapat hozzáadása -->
+
+        <section class="add-team">
+
+            <h2>Új csapat hozzáadása</h2>
+
+            <div class="add-container">
+
+                <input
+                    type="text"
+                    id="teamName"
+                    placeholder="Csapat neve..."
+                >
+
+                <button
+                    class="add-button"
+                    onclick="addTeam()"
+                >
+                    + Csapat hozzáadása
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- Ranglista -->
+
+        <section>
+
+            <div
+                id="ranking"
+                class="ranking"
+            >
+            </div>
+
+        </section>
+
+
+        <!-- Alsó vezérlők -->
+
+        <div class="bottom-controls">
+
+            <!-- Bal alsó gombok -->
+
+            <div class="file-controls">
+
+                <input
+                    type="file"
+                    id="importFile"
+                    accept=".txt"
+                    style="display: none;"
+                    onchange="importGroup(event)"
+                >
+
+                <button
+                    class="import-button"
+                    onclick="document.getElementById('importFile').click()"
+                >
+                    📂 Csoport importálása
+                </button>
+
+                <button
+                    class="export-button"
+                    onclick="exportGroup()"
+                >
+                    💾 Csoport exportálása
+                </button>
+
+            </div>
+
+
+            <!-- Jobb alsó gomb -->
+
+            <button
+                class="refresh-button"
+                onclick="refreshRanking()"
+            >
+                🔄 Rangsor frissítése
+            </button>
+
+        </div>
+
+    </main>
+
+
+    <script>
+
+        /*
+         * AKTUÁLIS CSOPORT
+         *
+         * Csak az A, B, C vagy D érték
+         * használható.
+         */
+
+        let currentGroup = "A";
+
+
+        /*
+         * Csapatok.
+         */
+
+        let teams = [
+
+            {
+                name: "Piros csapat",
+                score: 15
+            },
+
+            {
+                name: "Kék csapat",
+                score: 10
+            },
+
+            {
+                name: "Zöld csapat",
+                score: 7
+            },
+
+            {
+                name: "Sárga csapat",
+                score: 3
+            }
+
+        ];
+
+
+        /*
+         * Csoport nevének megjelenítése.
+         */
+
+        function renderGroupName() {
+
+            document.getElementById("groupName")
+                .textContent = currentGroup;
+
+        }
+
+
+        /*
+         * Csapatok megjelenítése.
+         *
+         * FONTOS:
+         * Itt nincs rendezés.
+         */
+
+        function renderTeams() {
+
+            const ranking =
+                document.getElementById("ranking");
+
+
+            ranking.innerHTML = "";
+
+
+            if (teams.length === 0) {
+
+                ranking.innerHTML = `
+                    <div class="empty">
+                        Még nincs hozzáadott csapat.
+                    </div>
+                `;
+
+                return;
+
+            }
+
+
+            teams.forEach(function(team, index) {
+
+                const teamElement =
+                    document.createElement("div");
+
+
+                if (index === 0) {
+
+                    teamElement.className =
+                        "team first";
+
+                } else {
+
+                    teamElement.className =
+                        "team";
+
+                }
+
+
+                let place;
+
+
+                if (index === 0) {
+
+                    place = "🥇";
+
+                } else if (index === 1) {
+
+                    place = "🥈";
+
+                } else if (index === 2) {
+
+                    place = "🥉";
+
+                } else {
+
+                    place = (index + 1) + ".";
+
+                }
+
+
+                teamElement.innerHTML = `
+
+                    <div class="place">
+                        ${place}
+                    </div>
+
+                    <div class="team-name">
+                        ${team.name}
+                    </div>
+
+                    <div class="score">
+                        ${team.score}
+
+                        <span class="score-label">
+                            pont
+                        </span>
+                    </div>
+
+                    <div class="controls">
+
+                        <button
+                            class="minus"
+                            onclick="changeScore(${index}, -1)"
+                        >
+                            −1
+                        </button>
+
+                        <button
+                            class="plus"
+                            onclick="changeScore(${index}, 1)"
+                        >
+                            +1
+                        </button>
+
+                        <button
+                            class="delete"
+                            onclick="deleteTeam(${index})"
+                        >
+                            Törlés
+                        </button>
+
+                    </div>
+
+                `;
+
+
+                ranking.appendChild(teamElement);
+
+            });
+
+        }
+
+
+        /*
+         * Pontszám módosítása.
+         *
+         * A sorrend nem változik.
+         */
+
+        function changeScore(index, amount) {
+
+            teams[index].score += amount;
+
+
+            if (teams[index].score < 0) {
+
+                teams[index].score = 0;
+
+            }
+
+
+            renderTeams();
+
+        }
+
+
+        /*
+         * RANGSOR FRISSÍTÉSE
+         */
+
+        function refreshRanking() {
+
+            teams.sort(function(a, b) {
+
+                return b.score - a.score;
+
+            });
+
+
+            renderTeams();
+
+        }
+
+
+        /*
+         * ÚJ CSAPAT
+         */
+
+        function addTeam() {
+
+            const input =
+                document.getElementById("teamName");
+
+
+            const name =
+                input.value.trim();
+
+
+            if (name === "") {
+
+                alert("Adj meg egy csapatnevet!");
+
+                return;
+
+            }
+
+
+            teams.push({
+
+                name: name,
+
+                score: 0
+
+            });
+
+
+            input.value = "";
+
+
+            renderTeams();
+
+        }
+
+
+        /*
+         * CSAPAT TÖRLÉSE
+         */
+
+        function deleteTeam(index) {
+
+            const teamName =
+                teams[index].name;
+
+
+            if (
+                confirm(
+                    "Biztosan törölni szeretnéd a(z) " +
+                    teamName +
+                    " csapatot?"
+                )
+            ) {
+
+                teams.splice(index, 1);
+
+                renderTeams();
+
+            }
+
+        }
+
+
+        /*
+         * CSOPORT EXPORTÁLÁSA
+         *
+         * A fájl első sora tartalmazza
+         * a csoport nevét.
+         */
+
+        function exportGroup() {
+
+            let fileContent =
+                "CSOPORT=" +
+                currentGroup +
+                "\n";
+
+
+            /*
+             * Üres sor az olvashatóság miatt.
+             */
+
+            fileContent += "\n";
+
+
+            /*
+             * Csapatok exportálása.
+             */
+
+            teams.forEach(function(team) {
+
+                fileContent +=
+                    team.name +
+                    "|" +
+                    team.score +
+                    "\n";
+
+            });
+
+
+            /*
+             * TXT fájl létrehozása.
+             */
+
+            const blob = new Blob(
+                [fileContent],
+                {
+                    type: "text/plain;charset=utf-8"
+                }
+            );
+
+
+            const url =
+                URL.createObjectURL(blob);
+
+
+            const link =
+                document.createElement("a");
+
+
+            link.href = url;
+
+
+            /*
+             * Például:
+             *
+             * csoport_A.txt
+             */
+
+            link.download =
+                "csoport_" +
+                currentGroup +
+                ".txt";
+
+
+            document.body.appendChild(link);
+
+            link.click();
+
+            document.body.removeChild(link);
+
+
+            URL.revokeObjectURL(url);
+
+        }
+
+
+        /*
+         * CSOPORT IMPORTÁLÁSA
+         */
+
+        function importGroup(event) {
+
+            const file =
+                event.target.files[0];
+
+
+            if (!file) {
+
+                return;
+
+            }
+
+
+            const reader =
+                new FileReader();
+
+
+            reader.onload =
+                function(e) {
+
+                    const text =
+                        e.target.result;
+
+
+                    const lines =
+                        text.split(/\r?\n/);
+
+
+                    let importedGroup = null;
+
+                    const importedTeams = [];
+
+
+                    /*
+                     * Fájl sorainak feldolgozása.
+                     */
+
+                    lines.forEach(function(line) {
+
+                        line = line.trim();
+
+
+                        if (line === "") {
+
+                            return;
+
+                        }
+
+
+                        /*
+                         * Csoportnév keresése.
+                         *
+                         * Például:
+                         * CSOPORT=A
+                         */
+
+                        if (
+                            line
+                                .toUpperCase()
+                                .startsWith("CSOPORT=")
+                        ) {
+
+                            importedGroup =
+                                line
+                                    .substring(8)
+                                    .trim()
+                                    .toUpperCase();
+
+                            return;
+
+                        }
+
+
+                        /*
+                         * Csapat feldolgozása.
+                         */
+
+                        const parts =
+                            line.split("|");
+
+
+                        if (parts.length !== 2) {
+
+                            return;
+
+                        }
+
+
+                        const name =
+                            parts[0].trim();
+
+
+                        const score =
+                            Number(
+                                parts[1].trim()
+                            );
+
+
+                        if (
+                            name !== "" &&
+                            !isNaN(score)
+                        ) {
+
+                            importedTeams.push({
+
+                                name: name,
+
+                                score: score
+
+                            });
+
+                        }
+
+                    });
+
+
+                    /*
+                     * Ellenőrizzük a csoport nevét.
+                     */
+
+                    if (
+                        importedGroup !== "A" &&
+                        importedGroup !== "B" &&
+                        importedGroup !== "C" &&
+                        importedGroup !== "D"
+                    ) {
+
+                        alert(
+                            "Hibás vagy hiányzó csoportnév! " +
+                            "A fájlban A, B, C vagy D csoportnak kell szerepelnie."
+                        );
+
+                        return;
+
+                    }
+
+
+                    /*
+                     * Ellenőrizzük, hogy van-e csapat.
+                     */
+
+                    if (importedTeams.length === 0) {
+
+                        alert(
+                            "A fájl nem tartalmaz érvényes csapatadatokat!"
+                        );
+
+                        return;
+
+                    }
+
+
+                    /*
+                     * Megerősítés.
+                     */
+
+                    const confirmImport =
+                        confirm(
+                            "Az importálás lecseréli az aktuális csoportot. Folytatod?"
+                        );
+
+
+                    if (!confirmImport) {
+
+                        return;
+
+                    }
+
+
+                    /*
+                     * Adatok lecserélése.
+                     */
+
+                    currentGroup =
+                        importedGroup;
+
+
+                    teams =
+                        importedTeams;
+
+
+                    /*
+                     * Megjelenítés.
+                     */
+
+                    renderGroupName();
+
+                    renderTeams();
+
+
+                    alert(
+                        "A " +
+                        currentGroup +
+                        " csoport sikeresen importálva."
+                    );
+
+                };
+
+
+            reader.readAsText(file);
+
+            event.target.value = "";
+
+        }
+
+
+/*
+* ENTER = új csapat.
+*/
+
+        document
+            .getElementById("teamName")
+            .addEventListener(
+                "keydown",
+                function(event) {
+
+                    if (event.key === "Enter") {
+
+                        addTeam();
+
+                    }
+
+                }
+            );
+
+        renderGroupName();
+        renderTeams();
+
+    </script>
+
+</body>
+</html>

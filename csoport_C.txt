@@ -1,0 +1,5 @@
+CSOPORT=C
+
+Nyíregyházi Szent Imre|0
+Gödöllői Premontrei|0
+Budapesti Kolping|0
